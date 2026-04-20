@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LOCKDOWN</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--o:#e85d00;--od:rgba(232,93,0,0.15);--w:#f0ece4;--g:rgba(240,236,228,0.5);--d:rgba(240,236,228,0.2);--bg:#0b0b0c;--card:#111113;--gn:#3ecf8e;--gnd:rgba(62,207,142,0.12);--pu:#a78bfa;--pud:rgba(167,139,250,0.12);--bl:#60a5fa;--bld:rgba(96,165,250,0.12);--rd:#f87171;--rdd:rgba(239,68,68,0.12);}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--w);font-family:'DM Sans',sans-serif;min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:90px;}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(11,11,12,0.97);border-top:1px solid rgba(255,255,255,0.06);display:flex;z-index:100;padding:8px 0 22px;}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--d);font-family:monospace;font-size:7px;letter-spacing:1px;cursor:pointer;padding:6px 0;transition:color 0.2s;}
+.nb.active{color:var(--o);}
+.nb svg{width:19px;height:19px;}
+.page{display:none;}.page.active{display:block;}
+.hdr{padding:52px 24px 22px;border-bottom:1px solid rgba(232,93,0,0.2);}
+.hl{font-family:monospace;font-size:8px;letter-spacing:4px;color:var(--o);text-transform:uppercase;margin-bottom:6px;opacity:.8;}
+.ht{font-family:'Bebas Neue',cursive;font-size:50px;letter-spacing:2px;line-height:1;color:var(--w);}
+.hs{font-size:13px;color:var(--g);margin-top:6px;font-weight:300;}
+.sl{padding:22px 24px 10px;font-family:monospace;font-size:8px;letter-spacing:4px;color:var(--d);text-transform:uppercase;}
+.ic{margin:0 24px 10px;background:var(--card);border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.05);font-size:13px;color:var(--g);line-height:1.6;font-weight:300;}
+.ic b{color:var(--w);font-weight:600;}.ic .hi{color:var(--o);font-weight:600;}.ic .gr{color:var(--gn);font-weight:600;}
+/* blocks */
+.blocks{padding:0 24px;}
+.block{background:var(--card);border-radius:12px;border:1px solid rgba(255,255,255,0.05);display:flex;overflow:hidden;cursor:pointer;margin-bottom:8px;transition:opacity .2s;}
+.block.done{opacity:.4;}
+.block.done .bt{text-decoration:line-through;text-decoration-color:var(--o);}
+.ba{width:4px;flex-shrink:0;}
+.bb{padding:14px 16px;flex:1;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.btime{font-family:monospace;font-size:8px;color:var(--g);letter-spacing:1px;margin-bottom:4px;}
+.bt{font-size:15px;font-weight:600;color:var(--w);}
+.bd{font-size:12px;color:var(--g);margin-top:3px;font-weight:300;line-height:1.4;}
+.cc{width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.block.done .cc{background:var(--o);border-color:var(--o);}
+.cc svg{display:none;}.block.done .cc svg{display:block;}
+/* progress */
+.pw{margin:16px 24px 0;background:var(--card);border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:18px;}
+.ro{position:relative;width:70px;height:70px;flex-shrink:0;}
+.rt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.rp{font-family:'Bebas Neue',cursive;font-size:20px;color:var(--w);line-height:1;}
+.rf{font-family:monospace;font-size:7px;color:var(--g);}
+/* streak */
+.sb{margin:10px 24px 0;background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;}
+.sn{font-family:'Bebas Neue',cursive;font-size:38px;color:var(--o);line-height:1;}
+.sl2{font-family:monospace;font-size:8px;letter-spacing:2px;color:var(--g);text-transform:uppercase;}
+.sd{display:flex;gap:5px;}
+.dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);}
+.dot.on{background:var(--o);border-color:var(--o);}.dot.td{border:1.5px solid var(--o);}
+/* stat grid */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 24px 0;}
+.sc{background:var(--card);border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.05);position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sc.o::before{background:linear-gradient(90deg,var(--o),transparent);}
+.sc.g::before{background:linear-gradient(90deg,var(--gn),transparent);}
+.sc.p::before{background:linear-gradient(90deg,var(--pu),transparent);}
+.sc.b::before{background:linear-gradient(90deg,var(--bl),transparent);}
+.sc.r::before{background:linear-gradient(90deg,var(--rd),transparent);}
+.slb{font-family:monospace;font-size:8px;letter-spacing:2px;color:var(--d);text-transform:uppercase;margin-bottom:6px;}
+.sv{font-family:'Bebas Neue',cursive;font-size:30px;line-height:1;color:var(--w);}
+.su{font-size:11px;margin-top:3px;font-weight:300;}
+/* macros */
+.mg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 24px 10px;}
+.mc{background:var(--card);border-radius:12px;padding:14px 10px;border:1px solid rgba(255,255,255,0.05);text-align:center;}
+.mv{font-family:'Bebas Neue',cursive;font-size:26px;color:var(--w);}
+.mu{font-size:10px;color:var(--g);}
+.mn{font-family:monospace;font-size:8px;letter-spacing:2px;color:var(--d);margin-top:4px;text-transform:uppercase;}
+/* meals */
+.ml{padding:0 24px;}
+.meal{background:var(--card);border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.05);display:flex;gap:14px;margin-bottom:8px;}
+.mt2{font-family:monospace;font-size:8px;color:var(--o);letter-spacing:1px;}
+.mi{font-size:22px;margin:4px 0;}
+.mn2{font-size:14px;font-weight:600;color:var(--w);margin-bottom:4px;}
+.mo{font-size:12px;color:var(--g);font-weight:300;line-height:1.55;white-space:pre-line;}
+.mc2{font-family:monospace;font-size:9px;color:var(--o);margin-top:5px;}
+/* orders */
+.og{padding:0 24px;}
+.oc{background:var(--card);border-radius:12px;padding:14px 16px;border:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.on2{font-size:14px;font-weight:500;color:var(--w);}
+.os{font-size:11px;color:var(--g);margin-top:2px;font-weight:300;}
+.badge{font-family:monospace;font-size:8px;padding:4px 8px;border-radius:20px;letter-spacing:1px;flex-shrink:0;margin-left:10px;}
+/* workout */
+.wl{padding:0 24px;}
+.wd{background:var(--card);border-radius:14px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;margin-bottom:8px;}
+.wdh{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.wdn{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:1px;color:var(--w);}
+.wdt{font-size:11px;color:var(--g);font-weight:300;margin-top:1px;}
+.wdr{display:flex;align-items:center;gap:8px;}
+.wdb{font-family:monospace;font-size:8px;padding:4px 8px;border-radius:20px;letter-spacing:1px;}
+.chev{color:var(--d);font-size:10px;transition:transform .2s;}
+.wd.open .chev{transform:rotate(180deg);}
+.we{border-top:1px solid rgba(255,255,255,0.05);padding:14px 16px;display:none;flex-direction:column;gap:12px;}
+.wd.open .we{display:flex;}
+.ex{display:flex;gap:12px;}
+.en{font-family:'Bebas Neue',cursive;font-size:20px;color:var(--o);opacity:.35;width:20px;flex-shrink:0;line-height:1.1;}
+.ename{font-size:13px;font-weight:600;color:var(--w);}
+.esets{font-size:11px;color:var(--g);font-weight:300;margin-top:2px;}
+.etip{font-size:11px;color:var(--o);font-weight:300;margin-top:2px;font-style:italic;}
+/* rules */
+.rl{padding:0 24px;}
+.rc{background:var(--card);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.04);display:flex;gap:14px;margin-bottom:8px;}
+.rn{font-family:'Bebas Neue',cursive;font-size:30px;color:var(--o);opacity:.3;line-height:1;flex-shrink:0;width:24px;}
+.rtitle{font-size:14px;font-weight:600;color:var(--w);margin-bottom:4px;}
+.rbody{font-size:12px;color:var(--g);line-height:1.6;font-weight:300;}
+/* countdown */
+.cd{margin:0 24px 10px;background:var(--card);border-radius:14px;padding:20px;border:1px solid rgba(232,93,0,0.3);position:relative;overflow:hidden;}
+.cd::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--o),transparent);}
+.cd-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:12px;}
+.cd-unit{text-align:center;}
+.cd-num{font-family:'Bebas Neue',cursive;font-size:32px;color:var(--o);line-height:1;}
+.cd-lbl{font-family:monospace;font-size:7px;letter-spacing:2px;color:var(--d);text-transform:uppercase;}
+/* phase bar */
+.phases{margin:0 24px 10px;display:flex;flex-direction:column;gap:8px;}
+.phase{background:var(--card);border-radius:12px;padding:16px;border:1px solid rgba(255,255,255,0.05);}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.phn{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:1px;}
+.phb{font-family:monospace;font-size:8px;padding:3px 8px;border-radius:20px;letter-spacing:1px;}
+.pbar{height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.pfill{height:100%;border-radius:2px;transition:width .8s ease;}
+.pdesc{font-size:12px;color:var(--g);margin-top:8px;font-weight:300;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<!-- TODAY -->
+
+<div class="page active" id="pg-today">
+<div class="hdr">
+<div class="hl">// 90-day lockdown</div>
+<div class="ht">TODAY</div>
+<div class="hs" id="today-date">—</div>
+</div>
+
+<!-- Countdown -->
+
+<div class="sl">— mission clock</div>
+<div class="cd">
+<div class="hl" style="margin-bottom:0">TARGET: 90 DAYS · FULL LOCKDOWN</div>
+<div class="cd-grid">
+<div class="cd-unit"><div class="cd-num" id="cd-days">90</div><div class="cd-lbl">days</div></div>
+<div class="cd-unit"><div class="cd-num" id="cd-hrs">00</div><div class="cd-lbl">hours</div></div>
+<div class="cd-unit"><div class="cd-num" id="cd-min">00</div><div class="cd-lbl">mins</div></div>
+<div class="cd-unit"><div class="cd-num" id="cd-sec">00</div><div class="cd-lbl">secs</div></div>
+</div>
+</div>
+
+<!-- Progress ring -->
+
+<div class="pw">
+<div class="ro">
+<svg width="70" height="70" viewBox="0 0 70 70"><circle cx="35" cy="35" r="29" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="6"/><circle id="ring-fill" cx="35" cy="35" r="29" fill="none" stroke="#e85d00" stroke-width="6" stroke-linecap="round" stroke-dasharray="183" stroke-dashoffset="183" style="transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .8s ease"/></svg>
+<div class="rt"><div class="rp" id="ring-pct">0%</div><div class="rf">done</div></div>
+</div>
+<div>
+<div style="font-size:15px;font-weight:600;color:var(--w);margin-bottom:4px">95kg → 80kg in 90 days.</div>
+<div style="font-size:12px;color:var(--g);font-weight:300;line-height:1.5">1,500 kcal. Gym daily.<br/>Zero alcohol. Zero sugar.<br/>Zero excuses.</div>
+</div>
+</div>
+
+<!-- Streak -->
+
+<div class="sb">
+<div><div class="sn" id="streak-num">0</div><div class="sl2">day streak</div></div>
+<div class="sd" id="streak-dots"></div>
+</div>
+
+<div class="sl">— morning · 6:00 AM</div>
+<div class="blocks">
+<div class="block" data-id="a1" onclick="toggle(this)"><div class="ba" style="background:var(--o)"></div><div class="bb"><div><div class="btime">06:00</div><div class="bt">Wake. No snooze. Ever.</div><div class="bd">Count 1-2-3. Stand up. Non-negotiable.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+<div class="block" data-id="a2" onclick="toggle(this)"><div class="ba" style="background:var(--o)"></div><div class="bb"><div><div class="btime">06:00–06:10</div><div class="bt">Make bed. Clean 1 thing.</div><div class="bd">Order outside = order inside.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+<div class="block" data-id="a3" onclick="toggle(this)"><div class="ba" style="background:var(--gn)"></div><div class="bb"><div><div class="btime">06:10–06:30</div><div class="bt">Breakfast: protein only</div><div class="bd">3 eggs OR protein shake. No bread. No sugar. ~250 kcal.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+<div class="block" data-id="a4" onclick="toggle(this)"><div class="ba" style="background:var(--pu)"></div><div class="bb"><div><div class="btime">06:30–06:45</div><div class="bt">Read 15 mins. No phone.</div><div class="bd">The book. Feed the mind before the world gets in.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+</div>
+
+<div class="sl">— work day</div>
+<div class="blocks">
+<div class="block" data-id="b1" onclick="toggle(this)"><div class="ba" style="background:var(--gn)"></div><div class="bb"><div><div class="btime">Lunch break</div><div class="bt">Walk 20 mins outside</div><div class="bd">Fast pace. No phone. Sweat if you can.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+<div class="block" data-id="b2" onclick="toggle(this)"><div class="ba" style="background:var(--gn)"></div><div class="bb"><div><div class="btime">Lunch</div><div class="bt">Grilled protein + veg only</div><div class="bd">Chicken/fish + salad or veg. No rice today. ~350 kcal.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+<div class="block" data-id="b3" onclick="toggle(this)"><div class="ba" style="background:var(--gn)"></div><div class="bb"><div><div class="btime">15:00</div><div class="bt">Snack: protein only</div><div class="bd">Greek yogurt OR handful almonds OR protein shake. ~150 kcal.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+</div>
+
+<div class="sl">— evening · the hard part</div>
+<div class="blocks">
+<div class="block" data-id="c1" onclick="toggle(this)"><div class="ba" style="background:var(--o)"></div><div class="bb"><div><div class="btime">18:30–19:45</div><div class="bt">GYM. Every. Single. Day.</div><div class="bd">Check Gym tab. No excuses. Tired is fine. Go anyway.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+<div class="block" data-id="c2" onclick="toggle(this)"><div class="ba" style="background:var(--gn)"></div><div class="bb"><div><div class="btime">20:00</div><div class="bt">Post-gym: protein + veg</div><div class="bd">Chicken + broccoli OR tuna + salad. Cook it. ~400 kcal.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+<div class="block" data-id="c3" onclick="toggle(this)"><div class="ba" style="background:var(--pu)"></div><div class="bb"><div><div class="btime">20:45–21:45</div><div class="bt">Skill hour — build the app</div><div class="bd">Code. Learn. Build. Your future self is watching.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+<div class="block" data-id="c4" onclick="toggle(this)"><div class="ba" style="background:var(--pu)"></div><div class="bb"><div><div class="btime">21:45–22:00</div><div class="bt">Journal 3 things</div><div class="bd">① Win ② Grateful ③ Better tomorrow. 3 lines. Always.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+<div class="block" data-id="c5" onclick="toggle(this)"><div class="ba" style="background:var(--bl)"></div><div class="bb"><div><div class="btime">22:00</div><div class="bt">Phone away. Sleep by 22:30.</div><div class="bd">Sleep = fat burn + muscle growth. Protect it.</div></div><div class="cc"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div></div>
+</div>
+<div style="height:16px"></div>
+</div>
+
+<!-- STATS -->
+
+<div class="page" id="pg-stats">
+<div class="hdr"><div class="hl">// 90-day targets</div><div class="ht">STATS</div><div class="hs">Extreme but safe. Real numbers.</div></div>
+<div class="sg">
+<div class="sc o"><div class="slb">Start</div><div class="sv">95kg</div><div class="su" style="color:var(--o)">Today. Day 1.</div></div>
+<div class="sc g"><div class="slb">90-day target</div><div class="sv">80kg</div><div class="su" style="color:var(--gn)">-15kg. Visible abs.</div></div>
+<div class="sc p"><div class="slb">Daily calories</div><div class="sv">1500</div><div class="su" style="color:var(--pu)">~900 deficit/day</div></div>
+<div class="sc b"><div class="slb">Weekly loss</div><div class="sv">1.2kg</div><div class="su" style="color:var(--bl)">Aggressive but real</div></div>
+<div class="sc r"><div class="slb">Alcohol</div><div class="sv">ZERO</div><div class="su" style="color:var(--rd)">90 days. No exceptions.</div></div>
+<div class="sc g"><div class="slb">Gym days</div><div class="sv">90/90</div><div class="su" style="color:var(--gn)">Every. Single. Day.</div></div>
+</div>
+
+<div class="sl">— 3-month phases</div>
+<div class="phases">
+<div class="phase">
+<div class="ph"><div class="phn" style="color:var(--rd)">PHASE 1 · WEEKS 1–4</div><span class="phb" style="background:var(--rdd);color:var(--rd)">ADAPT</span></div>
+<div class="pbar"><div class="pfill" style="width:33%;background:var(--rd)"></div></div>
+<div class="pdesc">Body screams. Mind fights back. <b style="color:var(--w)">Lose 4–5kg.</b> This is the hardest phase. You just have to survive it. Show up to the gym even when you hate it. Eat clean even when you want to quit. The habit is being built here.</div>
+</div>
+<div class="phase">
+<div class="ph"><div class="phn" style="color:var(--o)">PHASE 2 · WEEKS 5–8</div><span class="phb" style="background:var(--od);color:var(--o)">MOMENTUM</span></div>
+<div class="pbar"><div class="pfill" style="width:33%;background:var(--o)"></div></div>
+<div class="pdesc">People start noticing. Clothes feel different. <b style="color:var(--w)">Lose another 5–6kg.</b> Energy improves. The gym feels like a part of you now. This is where the heartbreak starts becoming fuel instead of pain.</div>
+</div>
+<div class="phase">
+<div class="ph"><div class="phn" style="color:var(--gn)">PHASE 3 · WEEKS 9–12</div><span class="phb" style="background:var(--gnd);color:var(--gn)">TRANSFORM</span></div>
+<div class="pbar"><div class="pfill" style="width:33%;background:var(--gn)"></div></div>
+<div class="pdesc">You look in the mirror and don't recognise yourself. <b style="color:var(--w)">Total: -12 to -15kg.</b> Muscle visible. Face slimmer. Completely different person. This is who you always were underneath.</div>
+</div>
+</div>
+
+<div class="sl">— daily macros · 1500 kcal</div>
+<div class="mg">
+<div class="mc"><div class="mv">160<span style="font-size:14px">g</span></div><div class="mu">protein</div><div class="mn">must hit</div></div>
+<div class="mc"><div class="mv">100<span style="font-size:14px">g</span></div><div class="mu">carbs</div><div class="mn">low carb</div></div>
+<div class="mc"><div class="mv">45<span style="font-size:14px">g</span></div><div class="mu">fat</div><div class="mn">minimum</div></div>
+</div>
+
+<div class="sl">— the math</div>
+<div class="ic">
+<b>TDEE ~2,400 kcal</b> (your maintenance)<br/>
+<b>Eating 1,500 kcal</b> = <span class="hi">900 deficit/day</span><br/>
+Gym daily burns extra <span class="hi">~300–400 kcal</span><br/>
+<b>Total deficit ~1,200/day = ~1.2kg fat/week</b><br/><br/>
+In 90 days: <span class="gr">~15kg of pure fat gone.</span><br/>
+Simultaneously building 2–3kg muscle = <span class="gr">you look like a completely different person.</span><br/><br/>
+Weigh every <b>Sunday morning</b> only. Track the trend not the day.
+</div>
+<div style="height:16px"></div>
+</div>
+
+<!-- FOOD -->
+
+<div class="page" id="pg-food">
+<div class="hdr"><div class="hl">// lockdown nutrition</div><div class="ht">FOOD</div><div class="hs">1,500 kcal. High protein. No sugar. No alcohol.</div></div>
+
+<div class="sl">— the 4 absolute rules</div>
+<div class="ic" style="border-color:rgba(232,93,0,0.3)">
+<span class="hi">① No alcohol.</span> Zero. 90 days. Not one sip.<br/>
+<span class="hi">② No sugar.</span> No sweets, juice, soda, chocolate, pastries.<br/>
+<span class="hi">③ No delivery junk.</span> Order smart or cook. No fried food.<br/>
+<span class="hi">④ Hit 160g protein.</span> Every single day. This protects your muscle.
+</div>
+
+<div class="sl">— daily meal plan · 1500 kcal</div>
+<div class="ml">
+<div class="meal"><div style="flex-shrink:0;text-align:center;padding-top:2px"><div class="mt2">06:10</div><div class="mi">🍳</div></div><div><div class="mn2">Breakfast</div><div class="mo">3 eggs scrambled (no toast)
+OR protein shake + black coffee</div><div class="mc2">~250 kcal · 30g protein</div></div></div>
+<div class="meal"><div style="flex-shrink:0;text-align:center;padding-top:2px"><div class="mt2">10:30</div><div class="mi">🥤</div></div><div><div class="mn2">Mid-morning</div><div class="mo">Protein shake + water
+OR 15g almonds + black coffee</div><div class="mc2">~150 kcal · 25g protein</div></div></div>
+<div class="meal"><div style="flex-shrink:0;text-align:center;padding-top:2px"><div class="mt2">13:00</div><div class="mi">🍗</div></div><div><div class="mn2">Lunch — lean protein + veg</div><div class="mo">Grilled chicken breast + salad (no dressing)
+OR tuna salad (olive oil only)
+OR grilled fish + steamed veg</div><div class="mc2">~350 kcal · 45g protein</div></div></div>
+<div class="meal"><div style="flex-shrink:0;text-align:center;padding-top:2px"><div class="mt2">15:00</div><div class="mi">🥚</div></div><div><div class="mn2">Afternoon snack</div><div class="mo">Greek yogurt 150g (plain, no honey)
+OR 2 boiled eggs</div><div class="mc2">~150 kcal · 15g protein</div></div></div>
+<div class="meal"><div style="flex-shrink:0;text-align:center;padding-top:2px"><div class="mt2">20:00</div><div class="mi">💪</div></div><div><div class="mn2">Post-gym dinner</div><div class="mo">Chicken breast + broccoli/spinach
+OR white fish + asparagus
+OR protein shake + banana (gym days only)</div><div class="mc2">~400 kcal · 45g protein</div></div></div>
+</div>
+
+<div class="sl">— ordering out: lockdown rules</div>
+<div class="og">
+<div class="oc"><div><div class="on2">Grilled chicken breast</div><div class="os">Ask for no sauce, no oil</div></div><span class="badge" style="background:var(--gnd);color:var(--gn)">GO</span></div>
+<div class="oc"><div><div class="on2">Grilled fish / salmon</div><div class="os">Steamed or grilled only</div></div><span class="badge" style="background:var(--gnd);color:var(--gn)">GO</span></div>
+<div class="oc"><div><div class="on2">Salad with protein</div><div class="os">Olive oil + lemon only. No creamy.</div></div><span class="badge" style="background:var(--gnd);color:var(--gn)">GO</span></div>
+<div class="oc"><div><div class="on2">Steamed / boiled veg</div><div class="os">Any veg, any amount</div></div><span class="badge" style="background:var(--gnd);color:var(--gn)">GO</span></div>
+<div class="oc"><div><div class="on2">Plain rice (small)</div><div class="os">Only post-gym. Max 1/2 cup.</div></div><span class="badge" style="background:var(--od);color:var(--o)">LIMIT</span></div>
+<div class="oc"><div><div class="on2">Alcohol — any kind</div><div class="os">90 days. Not one drop.</div></div><span class="badge" style="background:var(--rdd);color:var(--rd)">BANNED</span></div>
+<div class="oc"><div><div class="on2">Sugar / sweets / juice</div><div class="os">Invisible calories. Kills progress.</div></div><span class="badge" style="background:var(--rdd);color:var(--rd)">BANNED</span></div>
+<div class="oc"><div><div class="on2">Fried food of any kind</div><div class="os">Not once. Not even a bite.</div></div><span class="badge" style="background:var(--rdd);color:var(--rd)">BANNED</span></div>
+<div class="oc"><div><div class="on2">Delivery junk / fast food</div><div class="os">Cook or order clean. No exceptions.</div></div><span class="badge" style="background:var(--rdd);color:var(--rd)">BANNED</span></div>
+</div>
+<div style="height:16px"></div>
+</div>
+
+<!-- GYM -->
+
+<div class="page" id="pg-gym">
+<div class="hdr"><div class="hl">// daily training</div><div class="ht">GYM</div><div class="hs">Every day. No rest days. Active recovery only.</div></div>
+<div class="ic" style="margin-top:16px">
+<b>Mon: Push · Tue: Pull · Wed: Legs · Thu: Push · Fri: Pull · Sat: Legs + Cardio · Sun: Cardio only (active recovery)</b><br/><br/>
+Every session ends with <span class="hi">15 mins incline treadmill walk.</span> No exceptions. This is where the fat goes.
+</div>
+<div class="sl">— tap each day</div>
+<div class="wl">
+
+<div class="wd" id="w-mon"><div class="wdh" onclick="toggleW('w-mon')"><div><div class="wdn">MONDAY</div><div class="wdt">Push — Chest · Shoulders · Triceps</div></div><div class="wdr"><span class="wdb" style="background:var(--od);color:var(--o)">PUSH</span><span class="chev">▼</span></div></div>
+<div class="we">
+<div class="ex"><div class="en">1</div><div><div class="ename">Flat Dumbbell Press</div><div class="esets">4 sets × 10–12 reps</div><div class="etip">Feel chest, not shoulders. Control the weight.</div></div></div>
+<div class="ex"><div class="en">2</div><div><div class="ename">Incline Machine Press</div><div class="esets">3 sets × 12 reps</div><div class="etip">Upper chest. Full range.</div></div></div>
+<div class="ex"><div class="en">3</div><div><div class="ename">Cable Chest Fly</div><div class="esets">3 sets × 15 reps</div><div class="etip">Squeeze hard at the top.</div></div></div>
+<div class="ex"><div class="en">4</div><div><div class="ename">Lateral Raises</div><div class="esets">4 sets × 15 reps</div><div class="etip">No swinging. Slow and controlled.</div></div></div>
+<div class="ex"><div class="en">5</div><div><div class="ename">Overhead Press (Machine)</div><div class="esets">3 sets × 10 reps</div><div class="etip">Control on the way down.</div></div></div>
+<div class="ex"><div class="en">6</div><div><div class="ename">Tricep Pushdown</div><div class="esets">3 sets × 15 reps</div><div class="etip">Elbows pinned.</div></div></div>
+<div class="ex"><div class="en">+</div><div><div class="ename">Incline treadmill walk</div><div class="esets">15 mins · incline 8–10</div><div class="etip">Every session. The fat burner. Never skip.</div></div></div>
+</div></div>
+
+<div class="wd" id="w-tue"><div class="wdh" onclick="toggleW('w-tue')"><div><div class="wdn">TUESDAY</div><div class="wdt">Pull — Back · Biceps</div></div><div class="wdr"><span class="wdb" style="background:var(--pud);color:var(--pu)">PULL</span><span class="chev">▼</span></div></div>
+<div class="we">
+<div class="ex"><div class="en">1</div><div><div class="ename">Lat Pulldown</div><div class="esets">4 sets × 10–12 reps</div><div class="etip">Pull to upper chest. Squeeze lats.</div></div></div>
+<div class="ex"><div class="en">2</div><div><div class="ename">Seated Cable Row</div><div class="esets">4 sets × 12 reps</div><div class="etip">Drive elbows back. Chest tall.</div></div></div>
+<div class="ex"><div class="en">3</div><div><div class="ename">Single-arm DB Row</div><div class="esets">3 sets × 12 each</div><div class="etip">Full stretch at bottom.</div></div></div>
+<div class="ex"><div class="en">4</div><div><div class="ename">Face Pulls</div><div class="esets">3 sets × 15 reps</div><div class="etip">Protects shoulders. Don't skip.</div></div></div>
+<div class="ex"><div class="en">5</div><div><div class="ename">Bicep Curl</div><div class="esets">3 sets × 12 reps</div><div class="etip">No swinging. Full range.</div></div></div>
+<div class="ex"><div class="en">+</div><div><div class="ename">Incline treadmill walk</div><div class="esets">15 mins · incline 8–10</div><div class="etip">Every session. Always.</div></div></div>
+</div></div>
+
+<div class="wd" id="w-wed"><div class="wdh" onclick="toggleW('w-wed')"><div><div class="wdn">WEDNESDAY</div><div class="wdt">Legs — Quads · Hamstrings · Glutes</div></div><div class="wdr"><span class="wdb" style="background:var(--gnd);color:var(--gn)">LEGS</span><span class="chev">▼</span></div></div>
+<div class="we">
+<div class="ex"><div class="en">1</div><div><div class="ename">Leg Press</div><div class="esets">4 sets × 12 reps</div><div class="etip">Biggest muscles = most fat burned.</div></div></div>
+<div class="ex"><div class="en">2</div><div><div class="ename">Goblet Squat</div><div class="esets">3 sets × 12 reps</div><div class="etip">Chest up. Knees over toes.</div></div></div>
+<div class="ex"><div class="en">3</div><div><div class="ename">Leg Curl</div><div class="esets">4 sets × 12 reps</div><div class="etip">Slow on the way up.</div></div></div>
+<div class="ex"><div class="en">4</div><div><div class="ename">Walking Lunges</div><div class="esets">3 sets × 12 each leg</div><div class="etip">Full step. Knee near floor.</div></div></div>
+<div class="ex"><div class="en">5</div><div><div class="ename">Calf Raises</div><div class="esets">4 sets × 20 reps</div><div class="etip">Full stretch, full squeeze.</div></div></div>
+<div class="ex"><div class="en">+</div><div><div class="ename">Incline treadmill walk</div><div class="esets">20 mins after legs</div><div class="etip">Brutal. Do it anyway.</div></div></div>
+</div></div>
+
+<div class="wd" id="w-thu"><div class="wdh" onclick="toggleW('w-thu')"><div><div class="wdn">THURSDAY</div><div class="wdt">Push — repeat Monday + heavier</div></div><div class="wdr"><span class="wdb" style="background:var(--od);color:var(--o)">PUSH</span><span class="chev">▼</span></div></div>
+<div class="we"><div class="ex"><div class="en">·</div><div><div class="ename">Same as Monday</div><div class="esets">Beat Monday's numbers on every exercise.</div><div class="etip">Progressive overload = the only secret to muscle growth.</div></div></div></div></div>
+
+<div class="wd" id="w-fri"><div class="wdh" onclick="toggleW('w-fri')"><div><div class="wdn">FRIDAY</div><div class="wdt">Pull — repeat Tuesday + heavier</div></div><div class="wdr"><span class="wdb" style="background:var(--pud);color:var(--pu)">PULL</span><span class="chev">▼</span></div></div>
+<div class="we"><div class="ex"><div class="en">·</div><div><div class="ename">Same as Tuesday</div><div class="esets">Beat Tuesday's numbers. Log everything.</div><div class="etip">If you're not logging you're not progressing.</div></div></div></div></div>
+
+<div class="wd" id="w-sat"><div class="wdh" onclick="toggleW('w-sat')"><div><div class="wdn">SATURDAY</div><div class="wdt">Legs + Extended Cardio</div></div><div class="wdr"><span class="wdb" style="background:var(--gnd);color:var(--gn)">LEGS</span><span class="chev">▼</span></div></div>
+<div class="we">
+<div class="ex"><div class="en">·</div><div><div class="ename">Full leg session (same as Wed)</div><div class="esets">Beat Wednesday's numbers.</div></div></div>
+<div class="ex"><div class="en">+</div><div><div class="ename">30 min incline treadmill</div><div class="esets">After lifting. Maximum fat burn day.</div><div class="etip">Saturday is your biggest burn day of the week.</div></div></div>
+</div></div>
+
+<div class="wd" id="w-sun"><div class="wdh" onclick="toggleW('w-sun')"><div><div class="wdn">SUNDAY</div><div class="wdt">Active Recovery — Cardio only</div></div><div class="wdr"><span class="wdb" style="background:var(--bld);color:var(--bl)">CARDIO</span><span class="chev">▼</span></div></div>
+<div class="we">
+<div class="ex"><div class="en">1</div><div><div class="ename">45 min brisk walk or light jog</div><div class="esets">Outside. No gym needed.</div><div class="etip">This is recovery AND fat burn. Never fully rest.</div></div></div>
+<div class="ex"><div class="en">2</div><div><div class="ename">Meal prep for the week</div><div class="esets">Cook chicken, boil eggs, prep veg</div><div class="etip">1 hour Sunday = 5 days of clean eating.</div></div></div>
+<div class="ex"><div class="en">3</div><div><div class="ename">Weekly weigh-in + photo</div><div class="esets">Morning, after toilet, before food</div><div class="etip">Log it. Compare to last Sunday only.</div></div></div>
+</div></div>
+
+</div>
+<div style="height:16px"></div>
+</div>
+
+<!-- RULES -->
+
+<div class="page" id="pg-rules">
+<div class="hdr"><div class="hl">// lockdown laws</div><div class="ht">RULES</div><div class="hs">90 days. These don't bend. Not once.</div></div>
+<div class="sl">— the laws</div>
+<div class="rl">
+<div class="rc"><div class="rn">1</div><div><div class="rtitle">90 days is the mission.</div><div class="rbody">Not forever. Just 90 days of extreme discipline. You've done hard things before. This is 90 days. Count them down daily.</div></div></div>
+<div class="rc"><div class="rn">2</div><div><div class="rtitle">Not one drop of alcohol.</div><div class="rbody">Alcohol is 7 kcal per gram. It destroys sleep quality, raises cortisol, kills fat burning for 24 hours after. Zero. 90 days. No exceptions for "special occasions."</div></div></div>
+<div class="rc"><div class="rn">3</div><div><div class="rtitle">Gym is non-negotiable. Period.</div><div class="rbody">Tired? Go. Sad? Go. Heartbroken? Especially go. The gym is where you convert pain into power. Every session you show up is a vote for the new you.</div></div></div>
+<div class="rc"><div class="rn">4</div><div><div class="rtitle">160g protein every day.</div><div class="rbody">This is the single number that protects your muscle while you're in a massive calorie deficit. Miss calories before you miss protein.</div></div></div>
+<div class="rc"><div class="rn">5</div><div><div class="rtitle">The heartbreak is your rocket fuel.</div><div class="rbody">Every time it hurts — use it. Channel it into the gym, into the book, into building. In 90 days you'll look in the mirror and the pain will have built something.</div></div></div>
+<div class="rc"><div class="rn">6</div><div><div class="rtitle">No zero days. Ever.</div><div class="rbody">Even if everything goes wrong — do ONE thing. Read one page. Walk 10 minutes. Eat one clean meal. One thing keeps the chain alive.</div></div></div>
+<div class="rc"><div class="rn">7</div><div><div class="rtitle">Never miss twice.</div><div class="rbody">Miss a day? Fine. You're human. But you NEVER miss two days in a row. Ever. One miss is an accident. Two is a new habit.</div></div></div>
+<div class="rc"><div class="rn">8</div><div><div class="rtitle">The adventure is the antidote.</div><div class="rbody">"The antidote to suffering is not comfort — it is adventure toward excellence." — Peterson. You're not avoiding pain. You're transmuting it into something extraordinary.</div></div></div>
+<div class="rc"><div class="rn">9</div><div><div class="rtitle">Track everything.</div><div class="rbody">Log your gym lifts. Log your food. Weigh every Sunday. Take photos every 4 weeks. You can't manage what you don't measure. The data keeps you honest.</div></div></div>
+<div class="rc"><div class="rn">10</div><div><div class="rtitle">You've done it before. You WILL do it again.</div><div class="rbody">You already know you have this in you. The fire is there. 90 days. All in. Go.</div></div></div>
+</div>
+<div style="height:16px"></div>
+</div>
+
+<!-- NAV -->
+
+<nav class="nav">
+<button class="nb active" onclick="showPage('today',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>TODAY</button>
+<button class="nb" onclick="showPage('stats',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>STATS</button>
+<button class="nb" onclick="showPage('food',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>FOOD</button>
+<button class="nb" onclick="showPage('gym',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 6.5h11M6.5 17.5h11M3 12h18M6 8v8M18 8v8"/></svg>GYM</button>
+<button class="nb" onclick="showPage('rules',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>RULES</button>
+</nav>
+
+<script>
+function showPage(id,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));document.getElementById('pg-'+id).classList.add('active');btn.classList.add('active');window.scrollTo(0,0);}
+function toggleW(id){document.getElementById(id).classList.toggle('open');}
+
+// Date
+const dnames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const mnames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const now=new Date();
+document.getElementById('today-date').textContent=dnames[now.getDay()]+' · '+mnames[now.getMonth()]+' '+now.getDate();
+
+// Countdown — 90 days from first open
+function getStart(){let s=localStorage.getItem('lockdown_start');if(!s){s=new Date().toISOString();localStorage.setItem('lockdown_start',s);}return new Date(s);}
+function updateCD(){
+  const start=getStart();
+  const end=new Date(start.getTime()+90*24*60*60*1000);
+  const diff=end-new Date();
+  if(diff<=0){document.getElementById('cd-days').textContent='0';document.getElementById('cd-hrs').textContent='00';document.getElementById('cd-min').textContent='00';document.getElementById('cd-sec').textContent='00';return;}
+  const d=Math.floor(diff/(1000*60*60*24));
+  const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const m=Math.floor((diff%(1000*60*60))/(1000*60));
+  const s=Math.floor((diff%1000*60)/1000);
+  document.getElementById('cd-days').textContent=d;
+  document.getElementById('cd-hrs').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-min').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-sec').textContent=String(s).padStart(2,'0');
+}
+updateCD();setInterval(updateCD,1000);
+
+// Blocks
+const sk='lockdown_'+now.toDateString();
+function getS(){try{return JSON.parse(localStorage.getItem(sk)||'{}')}catch(e){return{}}}
+function saveS(s){try{localStorage.setItem(sk,JSON.stringify(s))}catch(e){}}
+function toggle(el){el.classList.toggle('done');const s=getS();s[el.dataset.id]=el.classList.contains('done');saveS(s);updateRing();}
+function updateRing(){const all=document.querySelectorAll('.block[data-id]');const done=document.querySelectorAll('.block[data-id].done').length;const pct=Math.round(done/all.length*100);document.getElementById('ring-pct').textContent=pct+'%';document.getElementById('ring-fill').style.strokeDashoffset=183-(183*pct/100);}
+function restoreS(){const s=getS();document.querySelectorAll('.block[data-id]').forEach(el=>{if(s[el.dataset.id])el.classList.add('done')});updateRing();}
+
+// Streak
+function getStr(){try{return JSON.parse(localStorage.getItem('lockdown_str')||'{"count":0,"last":""}')}catch(e){return{count:0,last:''}}}
+function renderStr(){const s=getStr();document.getElementById('streak-num').textContent=s.count;const el=document.getElementById('streak-dots');el.innerHTML='';for(let i=0;i<7;i++){const d=document.createElement('div');d.className='dot'+(i<s.count%7?' on':'')+(i===s.count%7?' td':'');el.appendChild(d);}}
+function checkStr(){const s=getStr();const today=now.toDateString();const yesterday=new Date(now-86400000).toDateString();if(s.last!==today&&Object.values(getS()).filter(Boolean).length>=8){s.count=s.last===yesterday?s.count+1:1;s.last=today;localStorage.setItem('lockdown_str',JSON.stringify(s));}renderStr();}
+
+restoreS();checkStr();
+</script>
+
+</body>
+</html>
